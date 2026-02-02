@@ -12,13 +12,16 @@ class DashboardController extends Controller
     /**
      * Display a listing of tasks.
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
         
         if (!$user) {
             return redirect()->route('login')->with('error', 'Please login first.');
         }
+        
+        // Get search query
+        $query = trim($request->get('query', ''));
         
         // Get all tasks for the user
         $allTasks = Task::where('user_id', $user->id);
@@ -38,12 +41,21 @@ class DashboardController extends Controller
                 ->get()
         ];
         
-        // Get paginated tasks
-        $tasks = Task::where('user_id', $user->id)
-            ->latest()
-            ->paginate(10);
+        // Get paginated tasks - apply search filter if query exists
+        $tasksQuery = Task::where('user_id', $user->id);
         
-        return view('Dashboard', compact('tasks', 'stats'));
+        if (!empty($query)) {
+            $tasksQuery->where(function($q) use ($query) {
+                $q->where('title', 'like', '%' . $query . '%')
+                  ->orWhere('description', 'like', '%' . $query . '%');
+            });
+        }
+        
+        $tasks = $tasksQuery->latest()
+            ->paginate(10)
+            ->appends($request->only('query'));
+        
+        return view('Dashboard', compact('tasks', 'stats', 'query'));
     }
 
     

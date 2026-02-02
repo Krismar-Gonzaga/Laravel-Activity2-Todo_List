@@ -28,7 +28,7 @@ class TaskController extends Controller
             'today' => Task::where('user_id', $user->id)
                 ->whereDate('created_at', today())
                 ->count(),
-            'this_week' => Task::where('ususer_ider_id', $user->id)
+            'this_week' => Task::where('user_id', $user->id)
                 ->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])
                 ->count(),
             'recent' => Task::where('user_id', $user->id)
