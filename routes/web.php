@@ -3,6 +3,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TaskController; 
+use App\Http\Controllers\SettingsController;
+
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -33,14 +35,10 @@ Route::middleware(['auth'])->group(function () {
         ->name('profile.image.delete');
 
     // Settings (email & password)
-    Route::get('/settings', [ProfileController::class, 'settings'])
-        ->name('settings.show');
-
-    Route::put('/settings/email', [ProfileController::class, 'updateEmail'])
-        ->name('settings.update-email');
-
-    Route::put('/settings/password', [ProfileController::class, 'updatePassword'])
-        ->name('settings.update-password');
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+    Route::get('/account-settings', [SettingsController::class, 'show'])->name('settings.show');
+    Route::put('/settings/email', [SettingsController::class, 'updateEmail'])->name('settings.update-email');
+    Route::put('/settings/password', [SettingsController::class, 'updatePassword'])->name('settings.update-password');
 });
 
 Route::middleware(['auth.check'])->group(function () {
