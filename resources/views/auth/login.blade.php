@@ -3,111 +3,508 @@
 @section('title', 'Login - TaskFlow')
 
 @section('content')
-<div class="min-h-screen flex flex-col items-center justify-center p-6 bg-white selection:bg-black selection:text-white">
-    <div class="w-full max-w-[400px]">
-        
-        <div class="mb-10 text-center">
-            <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-black mb-6 shadow-xl shadow-black/10">
-                <i class="fas fa-tasks text-white text-lg"></i>
+<style>
+    /* Modern gradient background animation */
+    @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    
+    /* Floating animation for the logo */
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-5px); }
+        100% { transform: translateY(0px); }
+    }
+    
+    /* Pulse effect for focus states */
+    @keyframes gentlePulse {
+        0% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.1); }
+        70% { box-shadow: 0 0 0 10px rgba(0, 0, 0, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0); }
+    }
+    
+    /* Custom styles */
+    .login-container {
+        background: linear-gradient(135deg, #b4b7c5 0%, #908c94 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+    }
+    
+    .login-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 2rem;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        padding: 2.5rem;
+        width: 100%;
+        max-width: 440px;
+        transition: transform 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .login-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .logo-wrapper {
+        animation: float 6s ease-in-out infinite;
+        display: inline-flex;
+        padding: 0.75rem;
+        background: linear-gradient(135deg, #878eaa 0%, #8c7e9b 100%);
+        border-radius: 1.5rem;
+        box-shadow: 0 20px 30px -10px rgba(102, 126, 234, 0.4);
+        margin-bottom: 2rem;
+        transition: all 0.3s ease;
+    }
+    
+    .logo-wrapper:hover {
+        transform: scale(1.05) rotate(5deg);
+    }
+    
+    .logo-icon {
+        width: 2.5rem;
+        height: 2.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: white;
+        border-radius: 1rem;
+        color: #667eea;
+        font-size: 1.25rem;
+    }
+    
+    .input-group {
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+    
+    .input-label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #1a202c;
+        margin-bottom: 0.5rem;
+        margin-left: 0.25rem;
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+    }
+    
+    .input-field {
+        width: 100%;
+        padding: 1rem 1.25rem;
+        background: #f7fafc;
+        border: 2px solid #e2e8f0;
+        border-radius: 1rem;
+        font-size: 0.95rem;
+        color: #1a202c;
+        transition: all 0.3s ease;
+        outline: none;
+    }
+    
+    .input-field:hover {
+        background: white;
+        border-color: #cbd5e0;
+    }
+    
+    .input-field:focus {
+        background: white;
+        border-color: #667eea;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        transform: scale(1.02);
+    }
+    
+    .input-field::placeholder {
+        color: #a0aec0;
+        font-weight: 300;
+    }
+    
+    .password-toggle {
+        position: absolute;
+        right: 1rem;
+        top: 3.5rem;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #a0aec0;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+    }
+    
+    .password-toggle:hover {
+        color: #667eea;
+        background: rgba(102, 126, 234, 0.1);
+    }
+    
+    .checkbox-wrapper {
+        display: flex;
+        align-items: center;
+        margin: 1.5rem 0;
+        cursor: pointer;
+    }
+    
+    .checkbox-wrapper input[type="checkbox"] {
+        width: 1.25rem;
+        height: 1.25rem;
+        border-radius: 0.375rem;
+        border: 2px solid #e2e8f0;
+        margin-right: 0.75rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .checkbox-wrapper input[type="checkbox"]:checked {
+        background-color: #667eea;
+        border-color: #667eea;
+    }
+    
+    .checkbox-wrapper label {
+        color: #4a5568;
+        font-size: 0.95rem;
+        font-weight: 500;
+        cursor: pointer;
+    }
+    
+    .login-button {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 1rem;
+        font-weight: 600;
+        font-size: 1rem;
+        letter-spacing: 0.025em;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .login-button::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+    
+    .login-button:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+    
+    .login-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 20px 30px -10px rgba(102, 126, 234, 0.5);
+    }
+    
+    .login-button:active {
+        transform: translateY(0);
+    }
+    
+    .divider {
+        position: relative;
+        text-align: center;
+        margin: 2rem 0;
+    }
+    
+    .divider::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+    }
+    
+    .divider span {
+        position: relative;
+        background: white;
+        padding: 0 1rem;
+        color: #718096;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    
+    .social-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        padding: 0.875rem;
+        background: white;
+        border: 2px solid #e2e8f0;
+        border-radius: 1rem;
+        color: #1a202c;
+        font-weight: 500;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        width: 100%;
+    }
+    
+    .social-button:hover {
+        background: #f7fafc;
+        border-color: #667eea;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px -10px rgba(102, 126, 234, 0.3);
+    }
+    
+    .social-button i {
+        color: #667eea;
+        font-size: 1.1rem;
+    }
+    
+    .register-link {
+        text-align: center;
+        margin-top: 2rem;
+        color: #718096;
+        font-size: 0.95rem;
+    }
+    
+    .register-link a {
+        color: #667eea;
+        font-weight: 600;
+        text-decoration: none;
+        margin-left: 0.5rem;
+        position: relative;
+    }
+    
+    .register-link a::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, #667eea, #764ba2);
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+    
+    .register-link a:hover::after {
+        transform: scaleX(1);
+    }
+    
+    .footer-text {
+        text-align: center;
+        margin-top: 2rem;
+        color: #a0aec0;
+        font-size: 0.875rem;
+        font-style: italic;
+        position: relative;
+    }
+    
+    .footer-text::before {
+    
+        margin-right: 0.5rem;
+        opacity: 0.5;
+    }
+    
+    /* Alert animations */
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .alert {
+        animation: slideDown 0.5s ease-out;
+        border-radius: 1rem;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        border-left: 4px solid;
+    }
+    
+    .alert-success {
+        background: linear-gradient(135deg, #f0fff4 0%, #e6fffa 100%);
+        border-left-color: #48bb78;
+        color: #22543d;
+    }
+    
+    .alert-error {
+        background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
+        border-left-color: #f56565;
+        color: #742a2a;
+    }
+    
+    .alert i {
+        font-size: 1.25rem;
+    }
+    
+    .forgot-link {
+        color: #718096;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.375rem;
+    }
+    
+    .forgot-link:hover {
+        color: #667eea;
+        background: rgba(102, 126, 234, 0.1);
+    }
+</style>
+
+<div class="login-container">
+    <div class="login-card">
+        <div class="text-center">
+            <div class="flex justify-center">
+                <div class="logo-wrapper">
+                    <div class="logo-icon">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                </div>
             </div>
-            <h1 class="text-3xl font-semibold tracking-tight text-slate-900">Welcome back</h1>
-            <p class="mt-2 text-slate-500 font-medium">Log in to your workspace to continue.</p>
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">Welcome back</h1>
+            <p class="text-gray-600 text-sm mb-8">Log in to your workspace to continue</p>
         </div>
 
         @if(session('success') || $errors->any())
-            <div class="mb-6 animate-in fade-in slide-in-from-top-2 duration-500">
+            <div class="mb-6">
                 @if(session('success'))
-                    <div class="flex items-center gap-3 p-4 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-800 text-sm">
+                    <div class="alert alert-success">
                         <i class="fas fa-check-circle"></i>
-                        {{ session('success') }}
+                        <span>{{ session('success') }}</span>
                     </div>
                 @endif
 
                 @if($errors->any())
-                    <div class="p-4 rounded-xl bg-red-50 border border-red-100 text-red-800 text-sm">
-                        <div class="flex items-center gap-2 mb-1 font-semibold">
-                            <i class="fas fa-circle-exclamation"></i> Invalid credentials
+                    <div class="alert alert-error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <div>
+                            <strong class="block mb-1">Invalid credentials</strong>
+                            <ul class="text-sm list-disc list-inside">
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
                         </div>
-                        <ul class="opacity-80 ml-6 list-disc">
-                            @foreach($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
                     </div>
                 @endif
             </div>
         @endif
 
-        <div class="space-y-6">
-            <form method="POST" action="{{ route('login') }}" class="space-y-5">
-                @csrf
+        <form method="POST" action="{{ route('login') }}">
+            @csrf
 
-                <div>
-                    <label for="email" class="block text-sm font-semibold text-slate-700 mb-2 ml-1">Email</label>
-                    <input type="email" id="email" name="email" value="{{ old('email') }}" required autofocus
-                        class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-[15px] placeholder:text-slate-400 focus:bg-white focus:border-black focus:ring-4 focus:ring-black/5 transition-all duration-300 outline-none"
-                        placeholder="name@company.com">
-                </div>
-
-                <div>
-                    <div class="flex justify-between mb-2 ml-1">
-                        <label for="password" class="text-sm font-semibold text-slate-700">Password</label>
-                        <a href="#" class="text-sm font-medium text-slate-400 hover:text-black transition-colors">Forgot?</a>
-                    </div>
-                    <div class="relative group">
-                        <input type="password" id="password" name="password" required
-                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-[15px] placeholder:text-slate-400 focus:bg-white focus:border-black focus:ring-4 focus:ring-black/5 transition-all duration-300 outline-none">
-                        <button type="button" class="toggle-password absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors">
-                            <i class="fas fa-eye text-sm"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="flex items-center gap-2 px-1">
-                    <input type="checkbox" id="remember" name="remember" 
-                        class="w-4 h-4 rounded border-slate-300 text-black focus:ring-black transition-all cursor-pointer">
-                    <label for="remember" class="text-sm font-medium text-slate-500 cursor-pointer select-none">Remember for 30 days</label>
-                </div>
-
-                <button type="submit" 
-                    class="w-full bg-black text-white py-3.5 rounded-xl font-semibold text-[15px] hover:bg-zinc-800 active:scale-[0.98] transition-all duration-200 shadow-lg shadow-black/5">
-                    Sign in to account
-                </button>
-            </form>
-
-            <div class="relative py-2">
-                <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-100"></div></div>
-                <div class="relative flex justify-center text-xs uppercase tracking-widest text-slate-400 font-bold bg-white px-4">Or continue with</div>
+            <div class="input-group">
+                <label for="email" class="input-label">Email</label>
+                <input type="email" id="email" name="email" value="{{ old('email') }}" required autofocus
+                    class="input-field"
+                    placeholder="name@company.com">
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
-                <button class="flex items-center justify-center gap-2 py-3 border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-all font-medium text-slate-700 text-sm">
-                    <i class="fab fa-google text-slate-400"></i> Google
-                </button>
-                <button class="flex items-center justify-center gap-2 py-3 border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-all font-medium text-slate-700 text-sm">
-                    <i class="fab fa-github text-slate-400"></i> GitHub
-                </button>
+            <div class="input-group">
+                <div class="flex justify-between items-center mb-2">
+                    <label for="password" class="input-label">Password</label>
+                    <a href="#" class="forgot-link">Forgot?</a>
+                </div>
+                <div class="relative">
+                    <input type="password" id="password" name="password" required
+                        class="input-field pr-12"
+                        placeholder="Enter your password">
+                    <button type="button" class="password-toggle" onclick="togglePassword()">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
             </div>
 
-            <p class="text-center text-slate-500 text-sm font-medium">
-                New to TaskFlow? 
-                <a href="{{ route('register') }}" class="text-black font-bold hover:underline underline-offset-4">Create account</a>
-            </p>
+            <div class="checkbox-wrapper">
+                <input type="checkbox" id="remember" name="remember">
+                <label for="remember">Remember me for 30 days</label>
+            </div>
+
+            <button type="submit" class="login-button">
+                Sign in to account
+            </button>
+        </form>
+
+        <div class="divider">
+            <span>Or continue with</span>
         </div>
 
-        <footer class="mt-16 text-center">
-            <p class="text-slate-400 text-xs font-medium tracking-wide italic">Built for teams who move fast.</p>
-        </footer>
+        <div class="grid grid-cols-2 gap-4">
+            <button class="social-button">
+                <i class="fab fa-google"></i>
+                Google
+            </button>
+            <button class="social-button">
+                <i class="fab fa-github"></i>
+                GitHub
+            </button>
+        </div>
+
+        <div class="register-link">
+            New to TaskFlow?
+            <a href="{{ route('register') }}">Create account</a>
+        </div>
+
+        <div class="footer-text">
+            Built for teams who move fast
+        </div>
     </div>
 </div>
 
 <script>
-document.querySelector('.toggle-password').addEventListener('click', function() {
-    const input = document.getElementById('password');
-    const icon = this.querySelector('i');
-    const isPassword = input.type === 'password';
-    input.type = isPassword ? 'text' : 'password';
-    icon.className = isPassword ? 'fas fa-eye-slash text-sm' : 'fas fa-eye text-sm';
+function togglePassword() {
+    const passwordInput = document.getElementById('password');
+    const toggleIcon = document.querySelector('.password-toggle i');
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.className = 'fas fa-eye-slash';
+    } else {
+        passwordInput.type = 'password';
+        toggleIcon.className = 'fas fa-eye';
+    }
+}
+
+// Add focus effects to inputs
+document.querySelectorAll('.input-field').forEach(input => {
+    input.addEventListener('focus', function() {
+        this.parentElement.classList.add('focused');
+    });
+    
+    input.addEventListener('blur', function() {
+        this.parentElement.classList.remove('focused');
+    });
+});
+
+// Smooth hover effects for social buttons
+document.querySelectorAll('.social-button').forEach(button => {
+    button.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-2px)';
+    });
+    
+    button.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0)';
+    });
 });
 </script>
 @endsection
